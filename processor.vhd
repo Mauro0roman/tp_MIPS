@@ -26,7 +26,7 @@ architecture processor_arq of processor is
 --DECLARACION DE COMPONENTES--
 
 component registers 
-    port  (clk : in STD_LOGIC;
+    port ( clk : in STD_LOGIC;
            reset : in STD_LOGIC;
            wr : in STD_LOGIC;
            reg1_dr : in STD_LOGIC_VECTOR (4 downto 0);
@@ -37,13 +37,25 @@ component registers
            data2_rd : out STD_LOGIC_VECTOR (31 downto 0));
            
 end component;
+component ALU
+    Port ( a : in STD_LOGIC_VECTOR(7 downto 0);
+           b : in STD_LOGIC_VECTOR(7 downto 0);
+           control : in STD_LOGIC_VECTOR(2 downto 0);
+           result : out STD_LOGIC_VECTOR(7 downto 0);
+           zero : out STD_LOGIC);
+end component;
 
 --DECLARACION DE SEÑALES--
     --ETAPA IF--
-
+	signal	mux_1, mux_2, I_Addr, I_DataOut, reg_PC, PC_4, IF_ID_PC_4, IF_ID_inst: STD_LOGIC_VECTOR (31 downto 0);
+		mux_sel, I_WrStb, I_RdStb: in STD_LOGIC;
+		
 
     --ETAPA ID--
-
+	port   (ctrl_u : in STD_LOGIC_VECTOR (31 downto 0);
+		sign_ex : in STD_LOGIC_VECTOR (15 downto 0);
+		IF_instruction : out STD_LOGIC_VECTOR (31 downto 0);
+		IF_pc_4 : out STD_LOGIC_VECTOR (31 downto 0));
 
     --ETAPA EX--
 
@@ -55,6 +67,17 @@ begin
 ---------------------------------------------------------------------------------------------------------------
 -- ETAPA IF
 ---------------------------------------------------------------------------------------------------------------
+	Port map (
+			clk => clk, 
+			reset => reset, 
+			mux_1 => mux_1,
+			mux_sel => mux_sel,
+			mux_2 => pc_4,
+			pc_sel => mux_out,
+			ins_mem_in => pc_out,
+			
+
+ 
  
  
 ---------------------------------------------------------------------------------------------------------------
