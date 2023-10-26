@@ -38,24 +38,37 @@ component registers
            
 end component;
 component ALU
-    Port ( a : in STD_LOGIC_VECTOR(7 downto 0);
-           b : in STD_LOGIC_VECTOR(7 downto 0);
-           control : in STD_LOGIC_VECTOR(2 downto 0);
-           result : out STD_LOGIC_VECTOR(7 downto 0);
+    Port ( a : in STD_LOGIC_VECTOR(31 downto 0);
+           b : in STD_LOGIC_VECTOR(31 downto 0);
+           op : in STD_LOGIC_VECTOR(2 downto 0);
+           result : out STD_LOGIC_VECTOR(31 downto 0);
            zero : out STD_LOGIC);
 end component;
+component control
+	port (  clk : in STD_LOGIC;
+			reset : in STD_LOGIC;
+			inst : in STD_LOGIC_VECTOR (5 downto 0);
+			reg_dst : out STD_LOGIC;
+			branch : out STD_LOGIC;
+			mem_rd : out STD_LOGIC;
+			mem_wr : out STD_LOGIC;
+			mem_to_reg : out STD_LOGIC;
+			alu_op : out STD_LOGIC_VECTOR(2 downto 0);
+			alu_src : out STD_LOGIC;
+			reg_wr : out STD_LOGIC;
 
---DECLARACION DE SE�ALES--
+	)
+end component;
+
+--DECLARACION DE SE�ALES--
     --ETAPA IF--
-	signal	mux_1, mux_2, I_Addr, I_DataOut, reg_PC, PC_4, IF_ID_PC_4, IF_ID_inst: STD_LOGIC_VECTOR (31 downto 0);
-		mux_sel, I_WrStb, I_RdStb: in STD_LOGIC;
+	signal	IF_I_Ins, IF_reg_PC, branch_addr, IF_pc_4,
+			IF_ID_PC_4, IF_ID_inst: in STD_LOGIC_VECTOR (31 downto 0);
+			IF_ctrl_mux_sel: in STD_LOGIC;
 		
 
     --ETAPA ID--
-	port   (ctrl_u : in STD_LOGIC_VECTOR (31 downto 0);
-		sign_ex : in STD_LOGIC_VECTOR (15 downto 0);
-		IF_instruction : out STD_LOGIC_VECTOR (31 downto 0);
-		IF_pc_4 : out STD_LOGIC_VECTOR (31 downto 0));
+	signal 
 
     --ETAPA EX--
 
@@ -67,15 +80,33 @@ begin
 ---------------------------------------------------------------------------------------------------------------
 -- ETAPA IF
 ---------------------------------------------------------------------------------------------------------------
-	Port map (
-			clk => clk, 
-			reset => reset, 
-			mux_1 => mux_1,
-			mux_sel => mux_sel,
-			mux_2 => pc_4,
-			pc_sel => mux_out,
-			ins_mem_in => pc_out,
-			
+IF_process: process (clk, reset, IF_ctrl_mux_sel, branch_addr, I_Addr, I_DataIn)
+begin
+	if (reset = '1') then
+		-- Lógica de reinicio
+		IF_reg_PC <= '0'';
+	elsif rising_edge(clk) then
+		-- Lógica de la etapa IF
+
+		IF_pc_4 = IF_reg_PC + 4;
+		if(IF_ctrl_mux_sel = '0') then
+			IF_reg_PC <= IF_pc_4;
+		else 
+			IF_reg_PC <= branch_addr;
+		end if;
+
+		I_Addr <= IF_reg_PC;
+		IF_I_Ins <= I_DataIn(to_integer(unsigned(I_Addr)));
+
+
+		-- Asigna valores a las señales de salida
+		
+		I_RdStb <= 1;
+		I_WrStb <= 0;
+		-- ...
+
+	end if;
+end process IF_process;
 
  
  
@@ -83,8 +114,17 @@ begin
 ---------------------------------------------------------------------------------------------------------------
 -- REGISTRO DE SEGMENTACION IF/ID
 --------------------------------------------------------------------------------------------------------------- 
- 
- 
+IF_ID_process: process (clk, reset, IF_I_Ins, IF_pc_4)
+begin
+	if (reset = '1') then
+		-- Lógica de reinicio
+		IF_ID_inst <= '0';
+		IF_ID_PC_4 <= '0';
+	elsif rising_edge(clk) then
+		IF_ID_inst <= IF_I_Ins;
+		IF_ID_PC_4 <= IF_pc_4;
+	end if;
+end process IF_ID_process;
  
 ---------------------------------------------------------------------------------------------------------------
 -- ETAPA ID
