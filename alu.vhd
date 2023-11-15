@@ -6,14 +6,14 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity ALU is
     Port ( a : in STD_LOGIC_VECTOR(31 downto 0);
            b : in STD_LOGIC_VECTOR(31 downto 0);
-           control : in STD_LOGIC_VECTOR(2 downto 0);
+           op : in STD_LOGIC_VECTOR(2 downto 0);
            result : out STD_LOGIC_VECTOR(31 downto 0);
            zero : out STD_LOGIC);
 end ALU;
 
 architecture Behavioral of ALU is
 begin
-    process(a, b, control)
+    process(a, b, op)
         variable temp_result : STD_LOGIC_VECTOR(31 downto 0);
     begin
         -- Inicializamos el resultado y el flag zero
@@ -21,7 +21,7 @@ begin
         zero <= '0';
 
         -- Lógica de la ALU
-        case control is
+        case op is
             when "000" =>
                 -- AND
                 temp_result := a and b;
