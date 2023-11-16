@@ -67,15 +67,6 @@ component ALU_control
 			alu_op : out std_logic_vector(2 downto 0)
 		);
 end component;
-component memory
-	Port ( 
-		Addr : in std_logic_vector(31 downto 0);
-        DataIn : in std_logic_vector(31 downto 0);
-        RdStb : in std_logic ;
-        WrStb : in std_logic ;
-        Clk : in std_logic ;						  
-        DataOut : out std_logic_vector(31 downto 0));
-end component;
 
 --DECLARACION DE SE�ALES--
     --ETAPA IF--
@@ -322,15 +313,6 @@ D_Addr <= EX_MEM_ALU_out;
 D_DataOut <= EX_MEM_datawrite;
 D_RdStb <= ctrl_EX_MEM_mem_read;
 D_WrStb <= ctrl_EX_MEM_mem_write;
-memory_inst: memory
-	Port map( 
-			Addr => D_Addr,
-			DataIn => D_DataOut,
-			RdStb => D_DataOut,
-			WrStb => D_WrStb,
-			Clk => clk,					  
-			DataOut => D_DataIn);
-
 
 ---------------------------------------------------------------------------------------------------------------
 -- REGISTRO DE SEGMENTACION MEM/WB
