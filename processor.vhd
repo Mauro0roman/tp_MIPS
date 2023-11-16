@@ -324,12 +324,12 @@ D_RdStb <= ctrl_EX_MEM_mem_read;
 D_WrStb <= ctrl_EX_MEM_mem_write;
 memory_inst: memory
 	Port map( 
-			Addr <= D_Addr,
-			DataIn <= D_DataOut,
-			RdStb <= D_DataOut,
-			WrStb <= D_WrStb,
-			Clk <= clk,					  
-			DataOut <= D_DataIn);
+			Addr => D_Addr,
+			DataIn => D_DataOut,
+			RdStb => D_DataOut,
+			WrStb => D_WrStb,
+			Clk => clk,					  
+			DataOut => D_DataIn);
 
 
 ---------------------------------------------------------------------------------------------------------------
