@@ -14,14 +14,12 @@ entity control is
 			mem_to_reg : out STD_LOGIC;
 			alu_op : out STD_LOGIC_VECTOR(2 downto 0);
 			alu_src : out STD_LOGIC;
-			reg_wr : out STD_LOGIC;)
+			reg_wr : out STD_LOGIC);
 end control; 
 
-Behavioral of control is
-    signal funct :std_logic_vector(5 downto 0);
+architecture Behavioral of control is
     
 begin
-    funct <= inst(31 downto 26);
     process(clk, reset)
     begin
         if (reset = "1") then
@@ -34,9 +32,9 @@ begin
             alu_op <= "000";
             alu_src <= "0";
             reg_wr <= "0"; 
-
-        elsif rising_edge(clk) then        
-            case funct is
+        
+        else    
+            case inst(31 downto 26) is
                 when "000000" =>
                     --Type R
                     reg_dst <= "1";
