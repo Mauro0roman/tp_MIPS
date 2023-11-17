@@ -30,12 +30,10 @@ begin
                 temp_result := a or b;
             when "010" =>
                 -- Suma
-                temp_result := (others => '0');
-                temp_result := (others => '0') & a + b;
+                temp_result := a + b;
             when "110" =>
-                -- Resta
-                temp_result := (others => '0');
-                temp_result := (others => '0') & a - b;
+                -- Resta      
+                temp_result := a - b;
             when "111" =>
                 -- Menor que
                 if a < b then
@@ -46,7 +44,7 @@ begin
                 end if;
             when others =>
                 -- Desplazamiento a la izquierda
-                temp_result := b(15 downto 0) & (others => '0');
+                temp_result := b(30 downto 0) & '0';
         end case;
 
         result <= temp_result;
