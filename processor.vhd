@@ -25,43 +25,43 @@ architecture processor_arq of processor is
 
   --DECLARACION DE COMPONENTES--
   component registers
-    port (clk      : in  STD_LOGIC;
-          reset    : in  STD_LOGIC;
-          wr       : in  STD_LOGIC;
-          reg1_dr  : in  STD_LOGIC_VECTOR(4 downto 0);
-          reg2_dr  : in  STD_LOGIC_VECTOR(4 downto 0);
-          reg_wr   : in  STD_LOGIC_VECTOR(4 downto 0);
-          data_wr  : in  STD_LOGIC_VECTOR(31 downto 0);
-          data1_rd : out STD_LOGIC_VECTOR(31 downto 0);
-          data2_rd : out STD_LOGIC_VECTOR(31 downto 0)
+    port (clk      : in  std_logic;
+          reset    : in  std_logic;
+          wr       : in  std_logic;
+          reg1_dr  : in  std_logic_vector(4 downto 0);
+          reg2_dr  : in  std_logic_vector(4 downto 0);
+          reg_wr   : in  std_logic_vector(4 downto 0);
+          data_wr  : in  std_logic_vector(31 downto 0);
+          data1_rd : out std_logic_vector(31 downto 0);
+          data2_rd : out std_logic_vector(31 downto 0)
          );
   end component;
   component ALU
-    port (a      : in  STD_LOGIC_VECTOR(31 downto 0);
-          b      : in  STD_LOGIC_VECTOR(31 downto 0);
-          op     : in  STD_LOGIC_VECTOR(2 downto 0);
-          result : out STD_LOGIC_VECTOR(31 downto 0);
-          zero   : out STD_LOGIC
+    port (a      : in  std_logic_vector(31 downto 0);
+          b      : in  std_logic_vector(31 downto 0);
+          op     : in  std_logic_vector(2 downto 0);
+          result : out std_logic_vector(31 downto 0);
+          zero   : out std_logic
          );
   end component;
   component control
-    port (clk        : in  STD_LOGIC;
-          reset      : in  STD_LOGIC;
-          inst       : in  STD_LOGIC_VECTOR(5 downto 0);
-          reg_dst    : out STD_LOGIC;
-          branch     : out STD_LOGIC;
-          mem_rd     : out STD_LOGIC;
-          mem_wr     : out STD_LOGIC;
-          mem_to_reg : out STD_LOGIC;
-          alu_op     : out STD_LOGIC_VECTOR(2 downto 0);
-          alu_src    : out STD_LOGIC;
-          reg_wr     : out STD_LOGIC
+    port (clk        : in  std_logic;
+          reset      : in  std_logic;
+          inst       : in  std_logic_vector(31 downto 0);
+          reg_dst    : out std_logic;
+          branch     : out std_logic;
+          mem_rd     : out std_logic;
+          mem_wr     : out std_logic;
+          mem_to_reg : out std_logic;
+          alu_op     : out std_logic_vector(2 downto 0);
+          alu_src    : out std_logic;
+          reg_wr     : out std_logic
          );
   end component;
   component ALU_control
     port (
-      clk            : in  STD_LOGIC;
-      reset          : in  STD_LOGIC;
+      clk            : in  std_logic;
+      reset          : in  std_logic;
       inst           : in  std_logic_vector(31 downto 0);
       control_alu_op : in  std_logic_vector(2 downto 0);
       alu_op         : out std_logic_vector(2 downto 0)
@@ -70,20 +70,20 @@ architecture processor_arq of processor is
 
   --DECLARACION DE SE�ALES--
   --ETAPA IF--
-  signal IF_I_Ins, IF_reg_PC, IF_pc_4, IF_ID_PC_4, IF_ID_inst : STD_LOGIC_VECTOR(31 downto 0);
-  signal IF_ctrl_mux_sel, PC_src                              : STD_LOGIC;
+  signal IF_I_Ins, IF_reg_PC, IF_pc_4, IF_ID_PC_4, IF_ID_inst : std_logic_vector(31 downto 0);
+  signal PC_src                                               : std_logic;
 
   --ETAPA ID--
-  signal ID_reg_dst, ID_branch, ID_mem_rd, ID_mem_wr, ID_reg_wr, ID_mem_to_reg, ID_alu_src, ctrl_ID_EX_MEM_read, ctrl_ID_EX_MEM_write, ctrl_ID_EX_MEM_toReg, ctrl_ID_EX_ALU_src, ctrl_ID_EX_branch, ctrl_ID_EX_reg_dst, ctrl_ID_EX_reg_wr : STD_LOGIC;
-  signal ID_data1_rd, ID_data2_rd, ID_sign_ex32, ID_Instruction, ID_EX_PC_4, ID_EX_data1_rd, ID_EX_data2_rd, ID_EX_sign_ex32                                                                                                              : STD_LOGIC_VECTOR(31 downto 0);
-  signal ctrl_ID_EX_ALU_op, ID_alu_op                                                                                                                                                                                                     : STD_LOGIC_VECTOR(2 downto 0);
+  signal ID_reg_dst, ID_branch, ID_mem_rd, ID_mem_wr, ID_reg_wr, ID_mem_to_reg, ID_alu_src, ctrl_ID_EX_MEM_read, ctrl_ID_EX_MEM_write, ctrl_ID_EX_MEM_toReg, ctrl_ID_EX_ALU_src, ctrl_ID_EX_branch, ctrl_ID_EX_reg_dst, ctrl_ID_EX_reg_wr : std_logic;
+  signal ID_data1_rd, ID_data2_rd, ID_sign_ex32, ID_Instruction, ID_EX_PC_4, ID_EX_data1_rd, ID_EX_data2_rd, ID_EX_sign_ex32                                                                                                              : std_logic_vector(31 downto 0);
+  signal ctrl_ID_EX_ALU_op, ID_alu_op                                                                                                                                                                                                     : std_logic_vector(2 downto 0);
   signal ID_EX_inst1, ID_EX_inst2                                                                                                                                                                                                         : std_logic_vector(4 downto 0);
 
   --ETAPA EX--
-  signal ctrl_EX_MEM_mem_read, ctrl_EX_MEM_mem_write, ctrl_EX_MEM_mem_toReg, ctrl_EX_MEM_reg_wr, EX_ALU_src, ctrl_EX_MEM_branch, EX_MEM_flagzero, EX_flagzero : std_logic;
-  signal EX_alu_op                                                                                                                                            : STD_LOGIC_VECTOR(2 downto 0);
+  signal ctrl_EX_MEM_mem_read, ctrl_EX_MEM_mem_write, ctrl_EX_MEM_mem_toReg, ctrl_EX_MEM_reg_wr, ctrl_EX_MEM_branch, EX_MEM_flagzero, EX_flagzero             : std_logic;
+  signal EX_alu_op                                                                                                                                            : std_logic_vector(2 downto 0);
   signal EX_MEM_reg_dst, EX_reg_dst                                                                                                                           : std_logic_vector(4 downto 0);
-  signal EX_ALU_out, EX_MEM_ALU_out, EX_ALU_in2, EX_PCshift, EX_MEM_datawrite, EX_MEM_PCshift                                                                 : STD_LOGIC_VECTOR(31 downto 0);
+  signal EX_ALU_out, EX_MEM_ALU_out, EX_ALU_in2, EX_PCshift, EX_MEM_datawrite, EX_MEM_PCshift                                                                 : std_logic_vector(31 downto 0);
   --ETAPA MEM--
   signal MEM_WB_datawrite, MEM_WB_mem_data         : std_logic_vector(31 downto 0);
   signal MEM_WB_reg_dst                            : std_logic_vector(4 downto 0);
@@ -221,8 +221,10 @@ begin
 
   EX_process: process (reset, ctrl_ID_EX_ALU_src)
   begin
-    if reset = "1" then
-
+    if reset = '1' then
+      ID_EX_sign_ex32 <= (others => '0');
+      EX_reg_dst <= (others => '0');
+      EX_ALU_out <= (others => '0');
     end if;
     if ctrl_ID_EX_ALU_src = '1' then
       EX_ALU_in2 <= ID_EX_sign_ex32;
@@ -253,7 +255,7 @@ begin
       result => EX_ALU_out,
       zero   => EX_flagzero
     );
-  EX_PCshift <= ID_EX_PC_4 & "00";
+  EX_PCshift <= ID_EX_PC_4(29 downto 0) & "00";
 
   ---------------------------------------------------------------------------------------------------------------
   -- REGISTRO DE SEGMENTACION EX/MEM
@@ -263,16 +265,16 @@ begin
   begin
     if (reset = '1') then
       -- Lógica de reinicio
-      EX_MEM_PCshift <= (others => "0");
-      EX_MEM_ALU_out <= (others => "0");
-      EX_MEM_flagzero <= "0";
-      EX_MEM_reg_dst <= (others => "0");
-      EX_MEM_datawrite <= (others => "0");
-      ctrl_EX_MEM_branch <= "0";
-      ctrl_EX_MEM_mem_read <= "0";
-      ctrl_EX_MEM_mem_toReg <= "0";
-      ctrl_EX_MEM_mem_write <= "0";
-      ctrl_EX_MEM_reg_wr <= "0";
+      EX_MEM_PCshift <= (others => '0');
+      EX_MEM_ALU_out <= (others => '0');
+      EX_MEM_flagzero <= '0';
+      EX_MEM_reg_dst <= (others => '0');
+      EX_MEM_datawrite <= (others => '0');
+      ctrl_EX_MEM_branch <= '0';
+      ctrl_EX_MEM_mem_read <= '0';
+      ctrl_EX_MEM_mem_toReg <= '0';
+      ctrl_EX_MEM_mem_write <= '0';
+      ctrl_EX_MEM_reg_wr <= '0';
 
       -- Los rising edge son solo para crear registros
     elsif rising_edge(clk) then
@@ -297,9 +299,9 @@ begin
   MEM_process: process (reset)
   begin
     if ctrl_EX_MEM_branch and EX_MEM_flagzero then
-      PC_src <= "1";
+      PC_src <= '1';
     else
-      PC_src <= "0";
+      PC_src <= '0';
     end if;
   end process;
   D_Addr    <= EX_MEM_ALU_out;
@@ -315,11 +317,11 @@ begin
   begin
     if (reset = '1') then
       -- Lógica de reinicio
-      MEM_WB_reg_dst <= (others => "0");
-      MEM_WB_datawrite <= (others => "0");
-      MEM_WB_mem_data <= (others => "0");
-      ctrl_MEM_WB_mem_toReg <= "0";
-      ctrl_MEM_WB_reg_wr <= "0";
+      MEM_WB_reg_dst <= (others => '0');
+      MEM_WB_datawrite <= (others => '0');
+      MEM_WB_mem_data <= (others => '0');
+      ctrl_MEM_WB_mem_toReg <= '0';
+      ctrl_MEM_WB_reg_wr <= '0';
 
     elsif rising_edge(clk) then
       MEM_WB_mem_data <= D_DataIn;
@@ -336,12 +338,7 @@ begin
   -- ETAPA WB
   ---------------------------------------------------------------------------------------------------------------
 
-  WB_process: process (reset)
-  begin
-    if ctrl_MEM_WB_mem_toReg = "1" then
-      WB_data_wr <= MEM_WB_datawrite;
-    else
-      WB_data_wr <= MEM_WB_mem_data;
-    end if;
-  end process;
+  
+  WB_data_wr <= MEM_WB_datawrite when (ctrl_MEM_WB_mem_toReg = '1') else MEM_WB_mem_data;
+    
 end architecture;
