@@ -16,7 +16,7 @@ begin
     process(clk, reset, control_alu_op)
         variable temp_alu_op: STD_LOGIC_VECTOR(2 downto 0);
     begin
-        if (reset = "1") then
+        if (reset = '1') then
             temp_alu_op := "000";       
         else
             if (alu_op = "000") then
