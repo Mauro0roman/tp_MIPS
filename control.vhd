@@ -22,117 +22,117 @@ architecture Behavioral of control is
 begin
     process(clk, reset)
     begin
-        if (reset = "1") then
+        if (reset = '1') then
 
-            reg_dst <= "0";
-            branch <= "0";
-            mem_rd <= "0";
-            mem_wr <= "0";
-            mem_to_reg <= "0";
+            reg_dst <= '0';
+            branch <= '0';
+            mem_rd <= '0';
+            mem_wr <= '0';
+            mem_to_reg <= '0';
             alu_op <= "000";
-            alu_src <= "0";
-            reg_wr <= "0"; 
+            alu_src <= '0';
+            reg_wr <= '0'; 
         
         else    
             case inst(31 downto 26) is
                 when "000000" =>
                     --Type R
-                    reg_dst <= "1";
-                    branch <= "0";
-                    mem_rd <= "0";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '1';
+                    branch <= '0';
+                    mem_rd <= '0';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "000";
-                    alu_src <= "0";
-                    reg_wr <= "1";
+                    alu_src <= '0';
+                    reg_wr <= '1';
 
                 when "100011" =>
                     -- Lw
-                    reg_dst <= "0";
-                    branch <= "0";
-                    mem_rd <= "1";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '0';
+                    mem_rd <= '1';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "010";
-                    alu_src <= "1";
-                    reg_wr <= "1";
+                    alu_src <= '1';
+                    reg_wr <= '1';
 
                 when "101011" =>
                     -- Rw
-                    reg_dst <= "0";
-                    branch <= "0";
-                    mem_rd <= "0";
-                    mem_wr <= "1";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '0';
+                    mem_rd <= '0';
+                    mem_wr <= '1';
+                    mem_to_reg <= '0';
                     alu_op <= "010";
-                    alu_src <= "1";
-                    reg_wr <= "0";
+                    alu_src <= '1';
+                    reg_wr <= '0';
                 
                 when "000100" =>
                     -- Beq
-                    reg_dst <= "0";
-                    branch <= "1";
-                    mem_rd <= "0";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '1';
+                    mem_rd <= '0';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "110";
-                    alu_src <= "0";
-                    reg_wr <= "0";   
+                    alu_src <= '0';
+                    reg_wr <= '0';   
 
                 when "001111" =>
                     -- LUI
-                    reg_dst <= "0";
-                    branch <= "0";
-                    mem_rd <= "0";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '0';
+                    mem_rd <= '0';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "101";
-                    alu_src <= "1";
-                    reg_wr <= "1"; 
+                    alu_src <= '1';
+                    reg_wr <= '1'; 
 
                 when "001000" =>
                     -- Addi
-                    reg_dst <= "0";
-                    branch <= "0";
-                    mem_rd <= "0";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '0';
+                    mem_rd <= '0';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "010";
-                    alu_src <= "1";
-                    reg_wr <= "1";    
+                    alu_src <= '1';
+                    reg_wr <= '1';    
                 
                 when "001100" =>
                     -- Andi
-                    reg_dst <= "0";
-                    branch <= "0";
-                    mem_rd <= "0";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '0';
+                    mem_rd <= '0';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "000";
-                    alu_src <= "1";
-                    reg_wr <= "1";  
+                    alu_src <= '1';
+                    reg_wr <= '1';  
 
                 when "001101" =>
                     -- Ori
-                    reg_dst <= "0";
-                    branch <= "0";
-                    mem_rd <= "0";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '0';
+                    mem_rd <= '0';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "001";
-                    alu_src <= "1";
-                    reg_wr <= "1"; 
+                    alu_src <= '1';
+                    reg_wr <= '1'; 
                 
                 when others =>
                     -- Nop
-                    reg_dst <= "0";
-                    branch <= "0";
-                    mem_rd <= "0";
-                    mem_wr <= "0";
-                    mem_to_reg <= "0";
+                    reg_dst <= '0';
+                    branch <= '0';
+                    mem_rd <= '0';
+                    mem_wr <= '0';
+                    mem_to_reg <= '0';
                     alu_op <= "000";
-                    alu_src <= "0";
-                    reg_wr <= "0";  
+                    alu_src <= '0';
+                    reg_wr <= '0';  
             end case;
         end if;    
     end process;
